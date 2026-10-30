@@ -1,0 +1,72 @@
+# Learn more about configuring your checkout UI extension:
+# https://shopify.dev/docs/api/checkout-ui-extensions/latest/configuration
+
+# The version of APIs your extension will receive. Learn more:
+# https://shopify.dev/docs/api/usage/versioning
+api_version = "2026-04"
+
+[[extensions]]
+name = "fab-india-emp"
+handle = "fab-india-emp"
+type = "ui_extension"
+uid = "f984492b-a013-ea92-fe55-618a82db74959beb3e44"
+
+# Controls where in Shopify your extension will be injected,
+# and the file that contains your extension’s source code. Learn more:
+# https://shopify.dev/docs/api/checkout-ui-extensions/latest/extension-targets-overview
+
+[[extensions.targeting]]
+module = "./src/Checkout.jsx"
+target = "purchase.checkout.delivery-address.render-after"
+
+[extensions.capabilities]
+# Gives your extension access to directly query Shopify’s storefront API.
+# https://shopify.dev/docs/api/checkout-ui-extensions/latest/configuration#api-access
+api_access = true
+
+# Gives your extension access to make external network calls, using the
+# JavaScript `fetch()` API. Learn more:
+# https://shopify.dev/docs/api/checkout-ui-extensions/latest/configuration#network-access
+ network_access = true
+ block_progress = true
+ 
+
+# Loads metafields on checkout resources, including the cart,
+# products, customers, and more. Learn more:
+# https://shopify.dev/docs/api/checkout-ui-extensions/latest/configuration#metafields
+
+[[extensions.metafields]]
+namespace = "$app"
+key = "requestedFreeGift"
+
+# Defines settings that will be collected from merchants installing
+# your extension. Learn more:
+# https://shopify.dev/docs/api/checkout-ui-extensions/latest/configuration#settings-definition
+
+# [extensions.settings]
+# [[extensions.settings.fields]]
+# key = "banner_title"
+# type = "single_line_text_field"
+# name = "Banner title"
+# description = "Enter a title for the banner"
+
+
+
+
+# Merchant-configurable settings, editable from the Checkout Editor
+# (Admin > Settings > Checkout > Customize > click this block).
+[extensions.settings]
+
+  [[extensions.settings.fields]]
+  key = "show_to_all_customers"
+  type = "boolean"
+  name = "Show to all customers"
+  description = "OFF (default): the employee dropdown only appears for identified employees (logged in via the store app, cookie present). ON: it appears for every customer at checkout."
+
+  [[extensions.settings.fields]]
+  key = "fallback_store_code"
+  type = "single_line_text_field"
+  name = "Fallback store code"
+  description = "Used only when 'Show to all customers' is ON and no employee is identified — lets the dropdown still load a list. Leave blank to disable this fallback."
+
+  

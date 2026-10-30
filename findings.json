@@ -1,0 +1,80 @@
+﻿{
+  "schema_version": 1,
+  "scope": {"include_dirs": [], "excludes": [], "no_git_ignore": false},
+  "checks_executed": [
+    {"check_id": "ACTIVE_UPLOADS_AND_PRIVILEGED_PREVIEWS", "check_version": 1, "status": "not_applicable", "reason": {"code": "no_uploads", "message": "No file upload, import, or privileged preview paths exist in the app."}},
+    {"check_id": "APP_PROXY_LIQUID_INJECTION", "check_version": 3, "status": "not_applicable", "reason": {"code": "no_app_proxy", "message": "No app proxy is configured or implemented."}},
+    {"check_id": "APP_PROXY_UNVERIFIED_SIGNATURE", "check_version": 2, "status": "not_applicable", "reason": {"code": "no_app_proxy", "message": "No app proxy endpoints exist."}},
+    {"check_id": "COMMITTED_SECRET", "check_version": 4, "status": "executed"},
+    {"check_id": "CREDENTIAL_BROWSER_LEAKAGE", "check_version": 2, "status": "executed"},
+    {"check_id": "CREDENTIAL_LOG_LEAKAGE", "check_version": 2, "status": "executed"},
+    {"check_id": "CROSS_SITE_SCRIPTING", "check_version": 1, "status": "executed"},
+    {"check_id": "CSRF_MISSING_PROTECTION", "check_version": 2, "status": "not_applicable", "reason": {"code": "no_server_routes", "message": "No custom state-changing HTTP server endpoints; admin UI uses Shopify session-bound GraphQL."}},
+    {"check_id": "DEPENDENCY_REACHABILITY", "check_version": 1, "status": "executed"},
+    {"check_id": "DEPRECATED_SCRIPT_TAG_SCOPE", "check_version": 2, "status": "not_applicable", "reason": {"code": "no_script_tags", "message": "App does not register ScriptTag resources."}},
+    {"check_id": "EOL_API_VERSION", "check_version": 2, "status": "executed"},
+    {"check_id": "EXPIRING_OFFLINE_TOKEN", "check_version": 2, "status": "not_applicable", "reason": {"code": "no_offline_tokens", "message": "No offline access token storage or refresh flow in this extensions-only app."}},
+    {"check_id": "INSECURE_WEBHOOK_URL", "check_version": 2, "status": "executed"},
+    {"check_id": "LIQUID_UNSAFE_RENDER", "check_version": 1, "status": "not_applicable", "reason": {"code": "no_liquid", "message": "No Liquid templates in the app package."}},
+    {"check_id": "METAFIELD_OFFLINE_TOKEN", "check_version": 2, "status": "not_applicable", "reason": {"code": "no_offline_tokens", "message": "No offline tokens stored in metafields."}},
+    {"check_id": "MISSING_AUTHORIZATION_CHECK", "check_version": 3, "status": "executed"},
+    {"check_id": "MISSING_COMPLIANCE_WEBHOOKS", "check_version": 1, "status": "executed"},
+    {"check_id": "MISSING_EMBEDDED_CSP", "check_version": 3, "status": "not_applicable", "reason": {"code": "platform_hosted", "message": "Admin and checkout UI extensions are hosted by Shopify platform CSP."}},
+    {"check_id": "MISSING_TENANT_ISOLATION", "check_version": 4, "status": "executed"},
+    {"check_id": "OPEN_REDIRECT", "check_version": 2, "status": "executed"},
+    {"check_id": "OVERBROAD_DATA_ACCESS", "check_version": 2, "status": "executed"},
+    {"check_id": "REQUEST_CONTROLLED_ADMIN_CONTEXT", "check_version": 4, "status": "executed"},
+    {"check_id": "REQUEST_DERIVED_SHOP_SCOPE", "check_version": 3, "status": "executed"},
+    {"check_id": "SCOPE_OVER_REQUEST", "check_version": 1, "status": "executed"},
+    {"check_id": "SCRIPT_TAG_URL_INJECTION", "check_version": 2, "status": "not_applicable", "reason": {"code": "no_script_tags", "message": "No ScriptTag registration."}},
+    {"check_id": "SESSION_LIFECYCLE_AND_REPLAY", "check_version": 1, "status": "not_applicable", "reason": {"code": "no_custom_session", "message": "No custom session store; relies on Shopify extension session."}},
+    {"check_id": "SQL_INJECTION", "check_version": 1, "status": "not_applicable", "reason": {"code": "no_sql", "message": "No SQL database access."}},
+    {"check_id": "SSRF_REQUEST_FORGERY", "check_version": 1, "status": "executed"},
+    {"check_id": "STATIC_FRAME_ANCESTORS", "check_version": 2, "status": "not_applicable", "reason": {"code": "platform_hosted", "message": "UI extensions run in Shopify-controlled frames."}},
+    {"check_id": "TEXT_SETTING_HTML_SMUGGLING", "check_version": 2, "status": "executed"},
+    {"check_id": "THEME_EXTENSION_XSS", "check_version": 2, "status": "not_applicable", "reason": {"code": "no_theme_extension", "message": "No theme app extension in this package."}},
+    {"check_id": "UNAUTHENTICATED_ENDPOINT", "check_version": 3, "status": "not_applicable", "reason": {"code": "no_server_routes", "message": "No custom HTTP server route handlers in the repository."}},
+    {"check_id": "UNSAFE_INNERHTML", "check_version": 3, "status": "executed"},
+    {"check_id": "UNSCOPED_SHOP_CONFIG_WRITE", "check_version": 2, "status": "executed"},
+    {"check_id": "WEAK_SHOP_VALIDATION", "check_version": 1, "status": "not_applicable", "reason": {"code": "no_shop_param_validation", "message": "No attacker-controlled shop domain validation surface; Admin API uses session-bound shopify:admin fetch."}}
+  ],
+  "findings": [
+    {
+      "check_id": "CREDENTIAL_BROWSER_LEAKAGE",
+      "check_version": 2,
+      "file": "extensions/fab-india-emp/src/Checkout.jsx",
+      "line": 48,
+      "message": "HTTP Basic Auth credentials are embedded in the checkout UI extension and shipped to every buyer browser, exposing the API username and password.",
+      "evidence": [
+        {
+          "file": "extensions/fab-india-emp/src/Checkout.jsx",
+          "line": 48,
+          "quote": "const BASIC_AUTH_HEADER = \"Basic ...\""
+        },
+        {
+          "file": "extensions/fab-india-emp/src/Checkout.jsx",
+          "line": 120,
+          "quote": "Authorization: BASIC_AUTH_HEADER"
+        }
+      ],
+      "confidence": "high",
+      "reasoning": "Checkout UI extension JavaScript is delivered to the browser. Hardcoded Basic Auth is readable via view-source and can be used to call the employee_list API as the service account."
+    },
+    {
+      "check_id": "COMMITTED_SECRET",
+      "check_version": 4,
+      "file": "extensions/fab-india-emp/src/Checkout.jsx",
+      "line": 48,
+      "message": "Service-account Basic Auth credential is committed in source and distributed in the extension bundle.",
+      "evidence": [
+        {
+          "file": "extensions/fab-india-emp/src/Checkout.jsx",
+          "line": 48,
+          "quote": "const BASIC_AUTH_HEADER = \"Basic ...\""
+        }
+      ],
+      "confidence": "high",
+      "reasoning": "A real credential format is present in tracked source used at runtime. Rotate the credential and move authentication to a server-side proxy."
+    }
+  ]
+}
