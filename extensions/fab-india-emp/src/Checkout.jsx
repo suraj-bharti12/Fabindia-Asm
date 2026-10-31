@@ -38,8 +38,9 @@ async function updateAttribute(key, value) {
 // get your API username & password. Ideally this call should go through a
 // server-side proxy (app backend / Shopify Function) that holds the real
 // credentials, and this extension should call that proxy instead.
-const API_URL = "https://mojito.mojitolabs.com/fabindia/employee_list.php";
-const BASIC_AUTH_HEADER = "Basic YWRtaW46ZmFiaW5kaWFAMDA=";
+const API_URL = "https://fabindia-asm.vercel.app/api/employee-list";
+//const API_URL = "https://mojito.mojitolabs.com/fabindia/employee_list.php";
+//const BASIC_AUTH_HEADER = "Basic YWRtaW46ZmFiaW5kaWFAMDA=";
 
 function Extension() {
   const [employees, setEmployees] = useState([]);
@@ -105,25 +106,24 @@ function Extension() {
       }
 
       try {
-        const res = await fetch(API_URL, {
-          method: "POST",
-          mode: "cors",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": BASIC_AUTH_HEADER,
-          },
-          body: JSON.stringify({ store_code: effectiveStoreCode }),
-        });
+  const res = await fetch(API_URL, {
+    method: "POST",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ store_code: effectiveStoreCode }),
+  });
 
-        if (res.status === 401) throw new Error("Authentication failed");
-        if (!res.ok) throw new Error(`Server error: ${res.status}`);
+  if (res.status === 401) throw new Error("Authentication failed");
+  if (!res.ok) throw new Error(`Server error: ${res.status}`);
 
-        const data = await res.json();
+  const data = await res.json();
 
-        if (!data.success) throw new Error(data.error || "API failed");
+  if (!data.success) throw new Error(data.error || "API failed");
 
-        if (!cancelled) setEmployees(data.employee_list || []);
-      } catch (err) {
+  if (!cancelled) setEmployees(data.employee_list || []);
+} catch (err) {
         if (!cancelled) {
           setError(
             err.message === "Failed to fetch"
