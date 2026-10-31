@@ -12,16 +12,9 @@ automatically_update_urls_on_dev = true
 api_version = "2026-10"
 
 [[webhooks.subscriptions]]
-  topics = [ "customers/data_request" ]
-  uri = "/webhooks/customers/data_request"
+compliance_topics = [ "customers/data_request", "customers/redact", "shop/redact" ]
+uri = "https://fabindia-asm.vercel.app/api/compliance"
 
-  [[webhooks.subscriptions]]
-  topics = [ "customers/redact" ]
-  uri = "/webhooks/customers/redact"
-
-  [[webhooks.subscriptions]]
-  topics = [ "shop/redact" ]
-  uri = "/webhooks/shop/redact"
 
 [access.admin]
 direct_api_mode = "online"

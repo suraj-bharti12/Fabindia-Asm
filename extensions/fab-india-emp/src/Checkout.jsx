@@ -33,14 +33,9 @@ async function updateAttribute(key, value) {
   }
 }
 
-// NOTE: Hardcoding Basic Auth credentials here is not safe — this code ships
-// to the browser and anyone can view-source / decode the Base64 string to
-// get your API username & password. Ideally this call should go through a
-// server-side proxy (app backend / Shopify Function) that holds the real
-// credentials, and this extension should call that proxy instead.
+
 const API_URL = "https://fabindia-asm.vercel.app/api/employee-list";
-//const API_URL = "https://mojito.mojitolabs.com/fabindia/employee_list.php";
-//const BASIC_AUTH_HEADER = "Basic YWRtaW46ZmFiaW5kaWFAMDA=";
+
 
 function Extension() {
   const [employees, setEmployees] = useState([]);
