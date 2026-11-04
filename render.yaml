@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: fabindia-asm
+    runtime: node
+    region: singapore
+    plan: starter
+    rootDir: server
+    buildCommand: npm install --omit=dev
+    startCommand: node server.js
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22.12.0"
+      - key: EMPLOYEE_API_USER
+        sync: false
+      - key: EMPLOYEE_API_PASS
+        sync: false
