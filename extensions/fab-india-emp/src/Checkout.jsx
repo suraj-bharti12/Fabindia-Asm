@@ -34,7 +34,7 @@ async function updateAttribute(key, value) {
 }
 
 
-const API_URL = "https://fabindia-asm.vercel.app/api/employee-list";
+const API_URL = "https://fabindia-asm.onrender.com/api/employee-list";
 
 
 function Extension() {
