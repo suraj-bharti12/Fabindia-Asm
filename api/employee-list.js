@@ -30,7 +30,8 @@ export default async function handler(req, res) {
 
   try {
     const upstream = await fetch(
-      "https://mojito.mojitolabs.com/fabindia/employee_list.php",
+           process.env.EMPLOYEE_API_URL ||
+        "https://mojito.mojitolabs.com/fabindia/employee_list.php",
       {
         method: "POST",
         headers: {
