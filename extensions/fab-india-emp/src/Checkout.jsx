@@ -107,7 +107,10 @@ function Extension() {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ store_code: effectiveStoreCode }),
+        body: JSON.stringify({
+      store_code: effectiveStoreCode,
+      shop: shopify.shop?.myshopifyDomain || "",
+    }),
   });
 
   if (res.status === 401) throw new Error("Authentication failed");

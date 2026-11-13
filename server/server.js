@@ -14,6 +14,13 @@ app.get("/health", (req, res) => res.status(200).send("ok"));
 
 app.use((req, res) => res.status(404).json({ success: false, error: "Not found" }));
 
+
+// Bad JSON etc.: short JSON error instead of an HTML stack trace
+app.use((err, req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.status(err.status || 500).json({ success: false, error: "Invalid request" });
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`fabindia-asm API listening on ${PORT}`);
