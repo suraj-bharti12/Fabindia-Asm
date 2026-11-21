@@ -101,32 +101,30 @@ function Extension() {
       }
 
       try {
-  const res = await fetch(API_URL, {
-    method: "POST",
-    mode: "cors",
-    headers: {
-      "Content-Type": "application/json",
-    },
-        body: JSON.stringify({
-      store_code: effectiveStoreCode,
-      shop: shopify.shop?.myshopifyDomain || "",
-    }),
-  });
+        const res = await fetch(API_URL, {
+          method: "POST",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            store_code: effectiveStoreCode,
+            shop: shopify.shop?.myshopifyDomain || "",
+          }),
+        });
 
-  if (res.status === 401) throw new Error("Authentication failed");
-  if (!res.ok) throw new Error(`Server error: ${res.status}`);
+        if (res.status === 401) throw new Error("Authentication failed");
+        if (!res.ok) throw new Error(`Server error: ${res.status}`);
 
-  const data = await res.json();
+        const data = await res.json();
 
-  if (!data.success) throw new Error(data.error || "API failed");
-
-  if (!cancelled) setEmployees(data.employee_list || []);
-} catch (err) {
+        // success:false = the employee API has no employees for this store code.
+        // Show it as an empty list, so the "contact the support team" message appears.
+        if (!cancelled) setEmployees(data.success ? data.employee_list || [] : []);
+      } catch (err) {
         if (!cancelled) {
           setError(
-            err.message === "Failed to fetch"
-              ? "Employee list load nahi ho payi — server ne request block kar di (CORS/preflight issue). Please check server config."
-              : "Employee list load nahi ho payi. Please retry."
+            "We couldn't load the employee list. Please refresh the page. If this keeps happening, please contact the support team."
           );
         }
       } finally {
@@ -144,10 +142,10 @@ function Extension() {
   const handleSelect = async (value) => {
     setSelected(value);
 
-    // employee_id set karo
+    // Save the selected employee_id
     await updateAttribute("employee_id", value);
 
-    // additional-info set karo → format: E13660-Anas Hafeez-BP1015
+    // Save additional-info → format: E13660-Anas Hafeez-BP1015
     if (value && effectiveStoreCode) {
       const emp = employees.find((e) => e.employee_id === value);
       const empName = emp?.employee_name || "";
@@ -187,8 +185,10 @@ function Extension() {
 
   if (employees.length === 0) {
     return (
-      <s-banner heading="Select Id" tone="warning">
-        <s-text>No employees found for this store.</s-text>
+      <s-banner heading="Select Id" tone="critical">
+        <s-text>
+          No employees are set up for store {effectiveStoreCode}. Please contact the support team.
+        </s-text>
       </s-banner>
     );
   }
